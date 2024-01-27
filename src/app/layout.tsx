@@ -20,8 +20,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.variable} suppressHydrationWarning={true}>
-        <Theme appearance="light" accentColor="ruby" grayColor="mauve" radius="large">
+      <body className={inter.variable}>
+        <Theme>
           <Navbar />
           <main className="p-5">{children}</main>
         </Theme>

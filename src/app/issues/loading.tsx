@@ -1,11 +1,9 @@
-import prisma from "../../../prisma/client";
 import { Table } from "@radix-ui/themes";
-import { StatusBadge, Link } from "../components";
+import Skeleton from "@/app/components/Skeleton";
 import IssueAction from "./IssueAction";
 
-const IssuesPage = async () => {
-  const issues = await prisma.issue.findMany();
-
+const LoadingPage = () => {
+  const issues = [1, 2, 3, 4];
   return (
     <div>
       <IssueAction />
@@ -20,20 +18,21 @@ const IssuesPage = async () => {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {issues.map(({ id, title, status, createdAt }) => {
+          {issues.map((_, index) => {
             return (
-              <Table.Row key={id}>
+              <Table.Row key={index}>
                 <Table.Cell>
-                  <Link href={`/issues/${id}`}>{title}</Link>
-
+                  <Skeleton />
                   <div className="block md:hidden">
-                    <StatusBadge status={status} />
+                    <Skeleton />
                   </div>
                 </Table.Cell>
                 <Table.Cell className="hidden md:table-cell">
-                  <StatusBadge status={status} />
+                  <Skeleton />
                 </Table.Cell>
-                <Table.Cell className="hidden md:table-cell">{createdAt.toDateString()}</Table.Cell>
+                <Table.Cell className="hidden md:table-cell">
+                  <Skeleton />
+                </Table.Cell>
               </Table.Row>
             );
           })}
@@ -43,4 +42,4 @@ const IssuesPage = async () => {
   );
 };
 
-export default IssuesPage;
+export default LoadingPage;
