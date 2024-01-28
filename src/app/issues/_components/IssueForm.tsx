@@ -7,13 +7,14 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createIssueSchema } from "@/app/validation";
+import { issueSchema } from "@/app/validation";
 import { ErrorMessage, Spinner } from "@/app/components";
 import SimpleMDE from "react-simplemde-editor";
+import { Issue } from "@prisma/client";
 
-type IssueForm = z.infer<typeof createIssueSchema>;
+type IssueFormData = z.infer<typeof issueSchema>;
 
-const NewIssuePage = () => {
+const IssueForm = ({ issue }: { issue?: Issue }) => {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
@@ -21,16 +22,21 @@ const NewIssuePage = () => {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<IssueForm>({
-    resolver: zodResolver(createIssueSchema),
+  } = useForm<IssueFormData>({
+    resolver: zodResolver(issueSchema),
   });
   const navigation = useRouter();
 
   const onSubmit = handleSubmit(async (data) => {
     try {
       setIsSubmitting(true);
-      await axios.post("/api/issues", data);
+      if (issue) {
+        await axios.patch(`/api/issues/${issue.id}`, data);
+      } else {
+        await axios.post("/api/issues", data);
+      }
       navigation.push("/issues");
+      navigation.refresh();
     } catch (error) {
       setIsSubmitting(false);
       setError("예상치 못한 오류 발생");
@@ -46,19 +52,22 @@ const NewIssuePage = () => {
       )}
       <form className="space-y-3" onSubmit={onSubmit}>
         <TextField.Root>
-          <TextField.Input placeholder="title" {...register("title")} />
+          <TextField.Input defaultValue={issue?.title} placeholder="title" {...register("title")} />
         </TextField.Root>
         <ErrorMessage>{errors.title?.message}</ErrorMessage>
         <Controller
           name="description"
+          defaultValue={issue?.description}
           control={control}
           render={({ field }) => <SimpleMDE {...field} ref={field.ref} />}
         />
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
-        <Button disabled={isSubmitting}>Create New Issue {isSubmitting && <Spinner />}</Button>
+        <Button disabled={isSubmitting}>
+          {issue ? "Update Issue" : "Create Issue"} {isSubmitting && <Spinner />}
+        </Button>
       </form>
     </div>
   );
 };
 
-export default NewIssuePage;
+export default IssueForm;

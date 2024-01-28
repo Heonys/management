@@ -2,10 +2,10 @@
 import dynamic from "next/dynamic";
 import React from "react";
 
-const MarkdownForm = dynamic(() => import("./MarkdownForm"), { ssr: false });
+const IssueForm = dynamic(() => import("../_components/IssueForm"), { ssr: false });
 
 const page = () => {
-  return <MarkdownForm />;
+  return <IssueForm />;
 };
 
 export default page;
