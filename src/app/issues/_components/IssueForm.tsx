@@ -25,7 +25,7 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
   } = useForm<IssueFormData>({
     resolver: zodResolver(issueSchema),
   });
-  const navigation = useRouter();
+  const router = useRouter();
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -35,8 +35,8 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
       } else {
         await axios.post("/api/issues", data);
       }
-      navigation.push("/issues");
-      navigation.refresh();
+      router.push("/issues");
+      router.refresh();
     } catch (error) {
       setIsSubmitting(false);
       setError("예상치 못한 오류 발생");
@@ -63,7 +63,8 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
         />
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
         <Button disabled={isSubmitting}>
-          {issue ? "Update Issue" : "Create Issue"} {isSubmitting && <Spinner />}
+          {issue ? "Update Issue" : "Create Issue"}
+          {isSubmitting && <Spinner />}
         </Button>
       </form>
     </div>
