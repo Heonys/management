@@ -4,6 +4,7 @@ import { Status } from "@prisma/client";
 import Pagination from "@/app/components/Pagination";
 import IssueTable, { IssueQuery, columnNames } from "./IssueTable";
 import { Flex } from "@radix-ui/themes";
+import { Metadata } from "next";
 
 type Props = {
   searchParams: IssueQuery;
@@ -37,6 +38,11 @@ const IssuesPage = async ({ searchParams }: Props) => {
       <Pagination pageSize={pageSize} currentPage={page} itemCount={issueCount} />
     </Flex>
   );
+};
+
+export const metadata: Metadata = {
+  title: "Issue-Management-IssueList",
+  description: "모든 이슈를 확인할 수 있습니다",
 };
 
 export const dynamic = "force-dynamic";

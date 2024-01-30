@@ -6,7 +6,7 @@ const useUser = () =>
   useQuery<User[]>({
     queryKey: ["users"],
     queryFn: () => axios<User[]>("/api/users").then((res) => res.data),
-    staleTime: 60 * 1000,
+    staleTime: 5 * 1000,
     retry: 3,
   });
 
